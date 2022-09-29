@@ -25,8 +25,6 @@ contract Token {
         uint256 value
     );
 
-    
-
     constructor(
         string memory _name,
         string memory _symbol, 
