@@ -297,11 +297,11 @@ describe('Exchange', () => {
           expect(await exchange.balanceOf(token2.address, user1.address)).to.equal(tokens(1))
           expect(await exchange.balanceOf(token2.address, user2.address)).to.equal(tokens(0.9))
           expect(await exchange.balanceOf(token2.address, feeAccount.address)).to.equal(tokens(0.1))
-        }) 
+        })
 
         it('updates filled orders', async () => {
           expect(await exchange.orderFilled(1)).to.equal(true)
-        }) 
+        })
 
         it('emits a Trade event', async () => {
           const event = result.events[0]
@@ -316,7 +316,7 @@ describe('Exchange', () => {
           expect(args.amountGive).to.equal(tokens(1))
           expect(args.creator).to.equal(user1.address)
           expect(args.timestamp).to.at.least(1)
-        }) 
+        })
 
       })
 
@@ -340,7 +340,7 @@ describe('Exchange', () => {
           await expect(exchange.connect(user2).fillOrder(1)).to.be.reverted
         })
 
-      }) 
+      })
 
     })
 

@@ -180,56 +180,56 @@ contract Exchange {
         require(!orderFilled[_id]);
         // 3. Order can't be cancelled
         require(!orderCancelled[_id]);
- 
+
         // Fetch order
         _Order storage _order = orders[_id];
 
         // Execute the trade
-       _trade(
+        _trade(
             _order.id,
             _order.user,
             _order.tokenGet,
             _order.amountGet,
             _order.tokenGive,
             _order.amountGive
-        ); 
+        );
 
         // Mark order as filled
-         orderFilled[_order.id] = true;
+        orderFilled[_order.id] = true;
     }
 
-   function _trade(
+    function _trade(
         uint256 _orderId,
         address _user,
         address _tokenGet,
         uint256 _amountGet,
         address _tokenGive,
         uint256 _amountGive
-    )  internal {
+    ) internal {
         // Fee is paid by the user who filled the order (msg.sender)
         // Fee is deducted from _amountGet
         uint256 _feeAmount = (_amountGet * feePercent) / 100;
- 
+
         // Execute the trade
         // msg.sender is the user who filled the order, while _user is who created the order
-       tokens[_tokenGet][msg.sender] =
+        tokens[_tokenGet][msg.sender] =
             tokens[_tokenGet][msg.sender] -
             (_amountGet + _feeAmount);
 
-        tokens[_tokenGet][_user] = tokens[_tokenGet][_user] + _amountGet; 
+        tokens[_tokenGet][_user] = tokens[_tokenGet][_user] + _amountGet;
 
         // Charge fees
-       tokens[_tokenGet][feeAccount] =
+        tokens[_tokenGet][feeAccount] =
             tokens[_tokenGet][feeAccount] +
-            _feeAmount; 
+            _feeAmount;
 
         tokens[_tokenGive][_user] = tokens[_tokenGive][_user] - _amountGive;
         tokens[_tokenGive][msg.sender] =
             tokens[_tokenGive][msg.sender] +
-            _amountGive; 
+            _amountGive;
 
         // Emit trade event
-       emit Trade(
+        emit Trade(
             _orderId,
             msg.sender,
             _tokenGet,
@@ -238,7 +238,7 @@ contract Exchange {
             _amountGive,
             _user,
             block.timestamp
-        ); 
+        );
     }
 
 }
