@@ -7,14 +7,16 @@ import {
   loadNetwork,
   loadAccount,
   loadTokens,
-  loadExchange, 
+  loadExchange,
+  loadAllOrders,
   subscribeToEvents
 } from '../store/interactions';
 
-import Navbar  from './Navbar';
-import Markets  from './Markets';
-import Balance from './Balance';
-import Order from './Order';
+import Navbar from './Navbar'
+import Markets from './Markets'
+import Balance from './Balance'
+import Order from './Order'
+import OrderBook from './OrderBook'
 
 function App() {
   const dispatch = useDispatch()
@@ -30,6 +32,12 @@ function App() {
     window.ethereum.on('chainChanged', () => {
       window.location.reload()
     })
+
+    // Fetch current account & balance from Metamask when changed
+    window.ethereum.on('accountsChanged', () => {
+      loadAccount(provider, dispatch)
+    })
+
     // Load token smart contracts
     const DApp = config[chainId].DApp
     const mETH = config[chainId].mETH
@@ -38,9 +46,12 @@ function App() {
     // Load exchange smart contract
     const exchangeConfig = config[chainId].exchange
     const exchange = await loadExchange(provider, exchangeConfig.address, dispatch)
-   
+
+    // Fetch all orders: open, filled, cancelled
+    loadAllOrders(provider, exchange, dispatch)
+
     // Listen to events
-    subscribeToEvents(exchange, dispatch)   
+    subscribeToEvents(exchange, dispatch)
   }
 
   useEffect(() => {
@@ -50,7 +61,7 @@ function App() {
   return (
     <div>
 
-      <Navbar/>
+      <Navbar />
 
       <main className='exchange grid'>
         <section className='exchange__section--left grid'>
@@ -70,7 +81,7 @@ function App() {
 
           {/* Trades */}
 
-          {/* OrderBook */}
+          <OrderBook />
 
         </section>
       </main>
